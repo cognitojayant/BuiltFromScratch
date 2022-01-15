@@ -1,11 +1,14 @@
 import numpy as np
-from fastcore.utils import *
+from dataclasses import dataclass
 
 
+
+@dataclass
 class Regression:
 
-    def __init__(self, n_iter, lr, regularization=None):
-        store_attr()
+    n_iter: int
+    lr: float
+    regularization: bool = None
 
     def _init_weight(self, n_features):
         w = np.random.normal(loc=0, scale=1, size=n_features)
@@ -29,10 +32,9 @@ class Regression:
         y_pred = x @ self.w
         return y_pred
 
-
+@dataclass
 class LassoRegularization:
-    def __init__(self, alpha):
-        store_attr()
+    alpha: float
 
     def __call__(self, w):
         return self.alpha * np.linalg.norm(w)
@@ -40,11 +42,9 @@ class LassoRegularization:
     def grad(self, w):
         return self.alpha * np.sign(w)
 
-
+@dataclass
 class RidgeRegularization:
-
-    def __init__(self, alpha):
-        store_attr()
+    alpha: float
 
     def __call__(self, w):
         return 0.5 * self.alpha * w @ w
@@ -52,10 +52,10 @@ class RidgeRegularization:
     def grad(self, w):
         return self.alpha * w
 
-
+@dataclass
 class ElasticRegression:
-    def __init__(self, alpha, contribution=0.5):
-        store_attr()
+    alpha: float
+    contribution: float = 0.5
 
     def __call__(self, w):
         lasso = self.contribution * np.linalg.norm(w)
@@ -66,5 +66,3 @@ class ElasticRegression:
         lasso = self.contribution * np.sign(w)
         ridge = (1 - self.contribution) * w
         return self.alpha * (lasso + ridge)
-
-
